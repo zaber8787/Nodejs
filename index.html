@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索页面</title>
+</head>
+
+<body>
+    <h1>搜索页面</h1>
+    <form id="searchForm">
+        <label for="searchQuery">搜索：</label>
+        <input type="text" id="searchQuery" name="searchQuery">
+        <button type="submit">搜索</button>
+    </form>
+    <div id="searchResults"></div>
+
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const searchResults = document.getElementById('searchResults');
+
+        searchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const searchQuery = document.getElementById('searchQuery').value;
+
+            try {
+                const response = await fetch('/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ searchQuery })
+                });
+                const data = await response.json();
+                searchResults.innerHTML = `<p>${data.message}</p>`;
+            } catch (error) {
+                console.error('Error:', error);
+                searchResults.innerHTML = '<p>发生错误，请稍后再试。</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

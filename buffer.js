@@ -8,3 +8,5 @@ console.log(buf_2)
 //3. from
 let buf_3 = Buffer.from('hello')
 console.log(buf_3)
+console.log(buf_3[0])
+console.log(buf_3[0].toString())
