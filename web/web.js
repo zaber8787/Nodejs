@@ -17,13 +17,15 @@ app.post('/search', (req, res) => {
     console.log('Received search query:', searchQuery);
 
     // 调用 Python 脚本，并传递搜索词作为参数
-    const pythonProcess = spawn('python', ['food.py', searchQuery]);
+    const pythonProcess = spawn('python', ['food.py', searchQuery], {
+        encoding: 'utf-8' // 设置字符编码为 UTF-8
+    });
 
     // 监听 Python 脚本的标准输出
     pythonProcess.stdout.on('data', (data) => {
         const responseData = data.toString().trim();
         console.log('Python script response:', responseData);
-        res.json({ message: responseData });
+        res.json(responseData);
     });
 
     // 监听 Python 脚本的错误输出
