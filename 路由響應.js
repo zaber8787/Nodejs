@@ -11,10 +11,12 @@ app.get('/other', (req, res) => {
     //下載
     //res.download(__dirname + '/package.json')
     //json響應
-    res.json({
-        name: 'zaber',
-        bot: 'kanada'
-    })
+    // res.json({
+    //     name: 'zaber',
+    //     bot: 'kanada'
+    // })
+    //檔案響應
+    res.sendFile(__dirname + '/express_try.html')
 })
 
 

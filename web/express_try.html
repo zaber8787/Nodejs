@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>recipe generator</title>
+</head>
+<style>
+    .white {
+        color: white;
+    }
+
+    #margin {
+        margin: 2px;
+    }
+</style>
+
+<body style="background-color: black;">
+    <h1 class=white style="background-color: black;">recipe generator</h1>
+    <div id="searchBoxes">
+        <!-- 默认显示一个搜索框 -->
+        <input type="text" class="searchInput" name="searchInput" id=margin>
+        <button class="removeButton" onclick="removeSearchBox(this)" id=margin>delete</button>
+    </div>
+    <button onclick="addSearchBox()" id=margin>add ingredient</button>
+    <button onclick="search()" id=margin>search</button>
+    <div id="result"></div>
+    <script>
+        function addSearchBox() {
+            var searchBoxes = document.getElementById('searchBoxes');
+            // 最多只允许添加 5 个搜索框
+            if (searchBoxes.children.length < 6) {
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'searchInput';
+                input.name = 'searchInput';
+                searchBoxes.appendChild(input);
+
+                var removeButton = document.createElement('button');
+                removeButton.innerHTML = '删除';
+                removeButton.className = 'removeButton';
+                removeButton.onclick = function () {
+                    removeSearchBox(this);
+                };
+                searchBoxes.appendChild(removeButton);
+            }
+        }
+
+        function removeSearchBox(button) {
+            var searchBoxes = document.getElementById('searchBoxes');
+            // 移除当前搜索框及其删除按钮
+            searchBoxes.removeChild(button.previousElementSibling);
+            searchBoxes.removeChild(button);
+        }
+
+        async function search() {
+            var searchInputs = document.getElementsByClassName('searchInput');
+            var searchData = [];
+            for (var i = 0; i < searchInputs.length; i++) {
+                searchData.push(searchInputs[i].value);
+            }
+            // 将搜索数据发送给服务器
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ searchData: searchData })
+            })
+                .then(response => response.json()) // 解析响应的 JSON 数据
+                .then(data => {
+                    // 清空之前的搜索结果
+                    var resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = '';
+
+                    // 显示 JSON 数据
+                    var jsonStr = JSON.stringify(data, null, 2);
+                    var pre = document.createElement('pre');
+                    pre.textContent = jsonStr;
+                    // 添加样式
+                    pre.style.color = 'white'; // 设置文字颜色为白色
+                    resultDiv.appendChild(pre);
+                })
+                .catch(error => {
+                    console.error('Error occurred:', error);
+                });
+        }
+
+    </script>
+</body>
+
+</html>

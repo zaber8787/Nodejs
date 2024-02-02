@@ -9,11 +9,9 @@ URL = "https://superiorapis-creator.cteam.com.tw/manager/feature/proxy/1abf355f1
 httpMethod = "post"
 
 # Data to be sent with the request
-ingredients = []
-ingredients = sys.argv[1].split()
-
+ingredients = json.loads(sys.argv[1])
 postData = json.dumps({
-    "ingredients": ingredients
+    "ingredients": ingredients['searchData']
 })
 
 # token token to be sent with the request
@@ -34,7 +32,10 @@ headers = {
 response = requests.post(URL, params=params, data=postData, headers=headers)
 
 # Print the response received from the server
-response = response.json()
-json.dump(response, sys.stdout.encode('utf-8'))
-with open('response.json', 'w', encoding='utf-8')as file:
-    json.dump(response, file, ensure_ascii=False)
+if response:
+    response = response.json()
+    json.dump(response, sys.stdout)
+    with open('response.json', 'w', encoding='utf-8')as file:
+        json.dump(response, file, ensure_ascii=False)
+else:
+    json.dump({"message": "No result"}, sys.stdout)
